@@ -16,16 +16,15 @@ let rateOpt (rateArg: string) =
     | true, rate when rate >= 0.0m -> Some rate
     | _ -> None
     
+open FsToolkit.ErrorHandling
+
 let earningsOpt monthArg hoursArg rateArg =
-    match monthOpt monthArg with
-    | None -> None
-    | Some _ ->
-        match hoursOpt hoursArg with
-        | None -> None
-        | Some hours ->
-            match rateOpt rateArg with
-            | None -> None
-            | Some rate -> Some(decimal hours * rate)
+    option {
+        let! _ = monthOpt monthArg
+        let! hours = hoursOpt hoursArg
+        let! rate = rateOpt rateArg
+        return decimal hours * rate
+    }
 
 [<EntryPoint>]
 let main args =
