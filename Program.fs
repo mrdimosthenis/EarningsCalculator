@@ -16,16 +16,15 @@ let rateRes (rateArg: string) =
     | true, rate when rate >= 0.0m -> Ok rate
     | _ -> Error "The rate argument should be a positive decimal"
 
+open FsToolkit.ErrorHandling
+
 let earningsRes monthArg hoursArg rateArg =
-    match monthRes monthArg with
-    | Error msg -> Error msg
-    | Ok _ ->
-        match hoursRes hoursArg with
-        | Error msg -> Error msg
-        | Ok hours ->
-            match rateRes rateArg with
-            | Error msg -> Error msg
-            | Ok rate -> Ok(decimal hours * rate)
+    result {
+        let! _ = monthRes monthArg
+        let! hours = hoursRes hoursArg
+        let! rate = rateRes rateArg
+        return decimal hours * rate
+    }
 
 [<EntryPoint>]
 let main args =
