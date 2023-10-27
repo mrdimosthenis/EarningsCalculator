@@ -19,10 +19,10 @@ let rateRes (rateArg: string) =
 open FsToolkit.ErrorHandling
 
 let earningsRes monthArg hoursArg rateArg =
-    result {
+    validation {
         let! _ = monthRes monthArg
-        let! hours = hoursRes hoursArg
-        let! rate = rateRes rateArg
+        and! hours = hoursRes hoursArg
+        and! rate = rateRes rateArg
         return decimal hours * rate
     }
 
@@ -34,8 +34,8 @@ let main args =
         | Ok earnings ->
             Console.WriteLine $"Your earnings for {monthArg} are {earnings}"
             0
-        | Error msg ->
-            Console.WriteLine msg
+        | Error messages ->
+            List.iter (fun (msg: string) -> Console.WriteLine msg) messages
             1
     | _ ->
         Console.WriteLine "Please provide three arguments"
