@@ -17,9 +17,15 @@ let rateOpt (rateArg: string) =
     | _ -> None
     
 let earningsOpt monthArg hoursArg rateArg =
-    match monthOpt monthArg, hoursOpt hoursArg, rateOpt rateArg with
-    | Some _, Some hours, Some rate -> Some(decimal hours * rate)
-    | _ -> None
+    match monthOpt monthArg with
+    | None -> None
+    | Some _ ->
+        match hoursOpt hoursArg with
+        | None -> None
+        | Some hours ->
+            match rateOpt rateArg with
+            | None -> None
+            | Some rate -> Some(decimal hours * rate)
 
 [<EntryPoint>]
 let main args =
